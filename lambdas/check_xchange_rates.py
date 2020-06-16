@@ -3,13 +3,10 @@ import boto3
 import datetime
 from decimal import Decimal
 
-exchange_url = 'http://localhost:8000/response.json'
-# exchange_url = 'https://openexchangerates.org/api/latest.json?app_id=eb33250b17004cce8de61e6d6e331e6c&symbols=CHF'
-
 session = boto3.Session(profile_name="dbadmin")
 appName = "exchange_rate"
 dynamodb = session.resource('dynamodb')
-def get_rate():
+def get_rate(exchange_url):
   with urllib.request.urlopen(exchange_url) as url:
     data = json.loads(url.read().decode())
     return data['rates']['CHF']
@@ -47,7 +44,8 @@ def get_last_id():
 
 def main():
   # print(get_last_id().value)
-  id, r = write_rate(get_rate())
+  import sys
+  id, r = write_rate(get_rate(sys.argv[1]))
   print("id:", id, "rate:", r)
 
 if __name__=='__main__':
