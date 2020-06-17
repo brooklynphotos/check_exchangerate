@@ -14,7 +14,7 @@ def lambda_handler(event, context):
   data = json.loads(msg)
   latest_id = data["responsePayload"]["id"]
   difference = find_difference(latest_id)
-  difference = float(difference) if difference else None
+  difference = "{:.3%}".format(difference) if difference else None
   print("difference", difference)
   return {
     'statusCode': 200,
@@ -33,7 +33,7 @@ def find_difference(id):
   prev_item = find_by_id(prev_id)
   if not prev_item:
     return None
-  return item['rate'] - prev_item['rate']
+  return (item['rate'] - prev_item['rate'])/prev_item['rate']
 
 def find_by_id(id):
   res = table.query(KeyConditionExpression=Key('id').eq(id))
