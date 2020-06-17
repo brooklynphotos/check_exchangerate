@@ -6,6 +6,7 @@ from decimal import Decimal
 session = boto3.Session(profile_name="dbadmin")
 appName = "exchange_rate"
 dynamodb = session.resource('dynamodb')
+
 def get_rate(exchange_url):
   with urllib.request.urlopen(exchange_url) as url:
     data = json.loads(url.read().decode())
@@ -40,7 +41,16 @@ def write_last_id(new_id):
 def get_last_id():
   table = dynamodb.Table('constants')
   response = table.get_item(Key={"appName":appName})
-  return response["Item"]["appValue"] if "Item" in response else 0
+  return int(response["Item"]["appValue"]) if "Item" in response else 0
+
+def lambda_handler(event, context):
+    id, rate = write_rate(get_rate(event['exchange_url']))
+    return {
+        'statusCode': 200,
+        'rate': rate,
+        'id': id
+    }
+
 
 def main():
   # print(get_last_id().value)
