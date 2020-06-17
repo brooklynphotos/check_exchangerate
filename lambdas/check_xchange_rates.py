@@ -18,7 +18,7 @@ def write_rate(rate):
   this_id = previousId + 1
   timestamp = int(datetime.datetime.now().timestamp())
   # one week expires
-  expiration = timestamp + (7 * 24 * 60 * 60 * 1000)
+  expiration = timestamp + (7 * 24 * 60 * 60)
   table.put_item(Item={
     "id": this_id,
     "rate": Decimal(str(rate)),
@@ -53,7 +53,6 @@ def lambda_handler(event, context):
         'rate': rate,
         'id': id
     }
-
 
 def main():
   # print(get_last_id().value)
