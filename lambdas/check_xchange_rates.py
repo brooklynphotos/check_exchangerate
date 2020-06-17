@@ -17,10 +17,13 @@ def write_rate(rate):
   table = dynamodb.Table('exchange_rates')
   this_id = previousId + 1
   timestamp = int(datetime.datetime.now().timestamp())
+  # one week expires
+  expiration = timestamp + (7 * 24 * 60 * 60 * 1000)
   table.put_item(Item={
     "id": this_id,
     "rate": Decimal(str(rate)),
     "timestamp": timestamp,
+    "expiration": expiration,
     "previousId": previousId
   })
   write_last_id(this_id)
