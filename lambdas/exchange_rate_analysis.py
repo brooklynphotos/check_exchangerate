@@ -9,12 +9,14 @@ table = dynamodb.Table('exchange_rates')
 def lambda_handler(event, context):
   msg = event["Records"][0]["Sns"]["Message"]
   msg = msg.replace('\n','')
+  print(msg)
   data = json.loads(msg)
   latest_id = data["id"]
   difference = find_difference(latest_id)
+  difference = float(difference) if difference else None
   return {
     'statusCode': 200,
-    'difference': float(difference)
+    'difference': difference
   }
 
 def find_difference(id):
