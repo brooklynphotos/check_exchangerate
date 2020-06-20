@@ -10,17 +10,34 @@
     "Analysis": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:eu-west-1:575798484766:function:exchangeRateAnalysis:stepfunction",
-      "Next": "SendMessage"
+      "Next": "DecideToSend"
+    },
+    "DecideToSend": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.alerted",
+          "BooleanEquals": true,
+          "Next": "SendMessage"
+        }
+      ],
+      "Default": "Finish"
     },
     "SendMessage": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
         "Message": {
-          "change.$": "$.difference"
+          "change.$": "$.difference",
+          "alert.$": "$.alerted"
         },
         "TopicArn": "arn:aws:sns:eu-west-1:575798484766:exchangeRateReport"
       },
+      "End": true
+    },
+    "Finish": {
+      "Type": "Pass",
+      "ResultPath": "$.difference",
       "End": true
     }
   }
