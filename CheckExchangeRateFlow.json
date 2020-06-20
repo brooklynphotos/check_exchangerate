@@ -1,0 +1,27 @@
+{
+  "Comment": "Flow of getting notified of exchange rate changes",
+  "StartAt": "Check Exchange Rate",
+  "States": {
+    "Check Exchange Rate": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:575798484766:function:checkExchangeRate:stepfunction",
+      "Next": "Analysis"
+    },
+    "Analysis": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:575798484766:function:exchangeRateAnalysis:stepfunction",
+      "Next": "SendMessage"
+    },
+    "SendMessage": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message": {
+          "change.$": "$.difference"
+        },
+        "TopicArn": "arn:aws:sns:eu-west-1:575798484766:exchangeRateReport"
+      },
+      "End": true
+    }
+  }
+}
