@@ -1,0 +1,16 @@
+[
+  #foreach($id in [1,2,3])
+   #set($timestamp = "June "+$id+", 2019")
+   #set($expiration = "June "+($id + 2)+", 2019")
+   #set($prevId = $id - 1)
+   #set($rate = $id * 3.14)
+   {
+    "id" : $id,
+    "timestamp" : $timestamp,
+    "expiration" : $expiration,
+    "previousId" : $prevId,
+    "rate" : $rate
+  } 
+  #if($foreach.hasNext),#end
+  #end
+  ]

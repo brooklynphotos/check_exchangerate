@@ -1,0 +1,13 @@
+#set($Integer = 1)
+#set($id = $Integer.parseInt($input.params("id")))
+#set($prevId = $id - 1)
+#set($timestamp = "June " + $id + ", 2020")
+#set($expiration = "June " + ($id + 2) + ", 2020")
+#set($rate = $id * 1.5)
+{
+  "id" : $id,
+  "timestamp" : $timestamp,
+  "expiration" : $expiration,
+  "previousId" : $prevId,
+  "rate" : $rate
+} 
